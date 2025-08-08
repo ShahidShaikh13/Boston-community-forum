@@ -5,36 +5,34 @@
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
   <% @categories.each do |category| %>
-    <div class="card">
-      <div class="card-header">
-        <h3 class="card-title"><%= category.name %></h3>
-        <span class="text-sm text-muted">
-          <%= pluralize(category.posts_count, 'post') %>
-        </span>
+    <div class="category-card">
+      <div class="category-icon" style="background-color: var(--primary-color);">
+        <i class="fas fa-folder"></i>
       </div>
+      <div class="category-title"><%= category.name %></div>
+      <div class="category-description"><%= category.description %></div>
       
-      <div class="card-content">
-        <p class="text-muted mb-4"><%= category.description %></p>
-        
-        <% if category.posts.any? %>
-          <div class="mb-4">
-            <h4 class="text-sm font-semibold mb-2">Recent Posts</h4>
-            <div class="space-y-2">
-              <% category.posts.recent.limit(3).each do |post| %>
-                <div class="text-sm">
-                  <%= link_to post.title, post_path(post), class: "hover:text-primary-color" %>
-                  <div class="text-muted text-xs">
-                    by <%= post.user.display_name %> • <%= time_ago_in_words(post.created_at) %> ago
-                  </div>
+      <% if category.posts.any? %>
+        <div class="mb-4">
+          <h4 class="text-sm font-semibold mb-2 text-muted">Recent Posts</h4>
+          <div class="space-y-2">
+            <% category.posts.recent.limit(3).each do |post| %>
+              <div class="text-sm">
+                <%= link_to post.title, post_path(post), class: "hover:text-primary-color" %>
+                <div class="text-muted text-xs mt-1">
+                  by <%= post.user.display_name %> • <%= time_ago_in_words(post.created_at) %> ago
                 </div>
-              <% end %>
-            </div>
+              </div>
+            <% end %>
           </div>
-        <% end %>
-        
-        <%= link_to category_path(category), class: "btn btn-primary btn-sm" do %>
+        </div>
+      <% end %>
+      
+      <div class="category-stats">
+        <span><%= pluralize(category.posts_count, 'post') %></span>
+        <%= link_to category_path(category), class: "text-primary-color hover:underline" do %>
           View All Posts
-          <i class="fas fa-arrow-right"></i>
+          <i class="fas fa-arrow-right ml-1"></i>
         <% end %>
       </div>
     </div>

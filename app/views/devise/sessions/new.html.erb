@@ -1,27 +1,135 @@
-<h2>Log in</h2>
-
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="form-group">
-    <%= f.label :email, class: "form-label" %>
-    <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control" %>
+<div class="mb-6">
+  <div class="text-center mb-8">
+    <h1>Welcome Back</h1>
+    <p class="text-muted">Sign in to your Boston Campus Forum account</p>
   </div>
 
-  <div class="form-group">
-    <%= f.label :password, class: "form-label" %>
-    <%= f.password_field :password, autocomplete: "current-password", class: "form-control" %>
-  </div>
+  <div class="max-w-md mx-auto">
+    <div class="card">
+      <h2 class="card-title mb-6">Sign In</h2>
+      
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "signin-form" }) do |f| %>
+        <div class="form-group">
+          <%= f.label :email, class: "form-label" do %>
+            <i class="fas fa-envelope"></i>
+            Email Address
+          <% end %>
+          <%= f.email_field :email, 
+              autofocus: true, 
+              autocomplete: "email",
+              class: "form-control",
+              placeholder: "your.email@college.edu",
+              required: true %>
+        </div>
 
-  <% if devise_mapping.rememberable? %>
-    <div class="form-group">
-      <%= f.check_box :remember_me %>
-      <%= f.label :remember_me %>
+        <div class="form-group">
+          <%= f.label :password, class: "form-label" do %>
+            <i class="fas fa-lock"></i>
+            Password
+          <% end %>
+          <%= f.password_field :password, 
+              autocomplete: "current-password",
+              class: "form-control",
+              placeholder: "Enter your password",
+              required: true %>
+        </div>
+
+        <% if devise_mapping.rememberable? %>
+          <div class="form-group">
+            <div class="flex items-center gap-2">
+              <%= f.check_box :remember_me, class: "form-checkbox" %>
+              <%= f.label :remember_me, "Remember me", class: "text-sm" %>
+            </div>
+          </div>
+        <% end %>
+
+        <div class="form-group">
+          <%= f.submit "Sign In", class: "btn btn-primary w-full" %>
+        </div>
+      <% end %>
+
+      <div class="text-center mt-6">
+        <p class="text-muted">Don't have an account?</p>
+        <%= link_to "Sign Up", new_user_registration_path, class: "btn btn-secondary" %>
+      </div>
+
+      <div class="border-t border-border-color mt-6 pt-6">
+        <div class="text-center">
+          <p class="text-muted mb-3">Or sign in with a sample account:</p>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="fillSampleAccount('john.smith@northeastern.edu', 'password123')" class="btn btn-sm btn-secondary">
+              <i class="fas fa-user"></i>
+              Sample User
+            </button>
+            <button onclick="fillSampleAccount('sarah.jones@bu.edu', 'password123')" class="btn btn-sm btn-secondary">
+              <i class="fas fa-user"></i>
+              Another User
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-  <% end %>
 
-  <div class="flex gap-4">
-    <%= f.submit "Log in", class: "btn btn-primary" %>
-    <%= link_to "Sign up", new_registration_path(resource_name), class: "btn btn-secondary" %>
+    <div class="card mt-6">
+      <h3 class="card-title mb-4">Sample Accounts</h3>
+      <div class="space-y-2 text-sm">
+        <div class="flex justify-between">
+          <span class="text-muted">Admin (Moderator):</span>
+          <span class="font-mono">john.smith@northeastern.edu</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-muted">Regular User:</span>
+          <span class="font-mono">sarah.jones@bu.edu</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-muted">Password:</span>
+          <span class="font-mono">password123</span>
+        </div>
+      </div>
+    </div>
   </div>
-<% end %>
+</div>
 
-<%= render "devise/shared/links" %>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.querySelector('.signin-form');
+  const submitBtn = form.querySelector('input[type="submit"]');
+  
+  form.addEventListener('submit', function() {
+    // Show loading state
+    submitBtn.value = 'Signing In...';
+    submitBtn.disabled = true;
+    
+    // Re-enable after a delay (form will redirect on success)
+    setTimeout(() => {
+      submitBtn.value = 'Sign In';
+      submitBtn.disabled = false;
+    }, 2000);
+  });
+});
+
+function fillSampleAccount(email, password) {
+  document.querySelector('#user_email').value = email;
+  document.querySelector('#user_password').value = password;
+  
+  // Show a brief message
+  const message = document.createElement('div');
+  message.className = 'flash flash-notice';
+  message.innerHTML = `
+    <i class="fas fa-check-circle"></i>
+    <span>Sample account filled! Click "Sign In" to continue.</span>
+    <button onclick="this.parentElement.remove()" class="flash-close">
+      <i class="fas fa-times"></i>
+    </button>
+  `;
+  
+  document.querySelector('.main-content').insertBefore(message, document.querySelector('.main-content').firstChild);
+  
+  // Auto-remove after 3 seconds
+  setTimeout(() => {
+    if (message.parentElement) {
+      message.remove();
+    }
+  }, 3000);
+}
+</script>

@@ -6,9 +6,19 @@ Rails.application.routes.draw do
   # Root route
   root "home#index"
 
+  # Static pages
+  get 'terms', to: 'pages#terms'
+  get 'privacy', to: 'pages#privacy'
+
   # Resources
   resources :categories, only: [:index, :show]
   resources :posts do
+    member do
+      post :upvote
+      post :downvote
+      post :pin
+      post :unpin
+    end
     resources :comments, only: [:create, :destroy]
   end
 

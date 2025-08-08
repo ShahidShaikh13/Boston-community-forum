@@ -1,84 +1,97 @@
 <div class="mb-6">
   <div class="flex items-center justify-between mb-4">
-    <div class="flex items-center gap-4">
-      <%= link_to posts_path, class: "btn btn-secondary btn-sm" do %>
-        <i class="fas fa-arrow-left"></i>
-        Back to Posts
+    <div>
+      <h1><%= @post.title %></h1>
+      <div class="flex items-center gap-4 text-sm text-muted mt-2">
+        <span>
+          <i class="fas fa-user"></i>
+          <%= @post.user.display_name %>
+        </span>
+        <span>
+          <i class="fas fa-university"></i>
+          <%= @post.user.college %>
+        </span>
+        <span>
+          <i class="fas fa-clock"></i>
+          <%= time_ago_in_words(@post.created_at) %> ago
+        </span>
+        <span>
+          <i class="fas fa-folder"></i>
+          <%= @post.category.name %>
+        </span>
+      </div>
+    </div>
+    
+    <% if user_signed_in? && @post.user == current_user %>
+      <div class="flex gap-2">
+        <%= link_to edit_post_path(@post), class: "btn btn-secondary btn-sm" do %>
+          <i class="fas fa-edit"></i>
+          Edit
+        <% end %>
+        <%= button_to post_path(@post), method: :delete, 
+            class: "btn btn-danger btn-sm", 
+            data: { confirm: "Are you sure?" } do %>
+          <i class="fas fa-trash"></i>
+          Delete
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+  
+  <!-- Voting Section -->
+  <div class="flex items-center gap-4 mb-6">
+    <div class="flex items-center gap-2">
+      <%= button_to upvote_post_path(@post), method: :post, class: "btn btn-sm" do %>
+        <i class="fas fa-thumbs-up"></i>
       <% end %>
-      
-      <% if user_signed_in? && @post.user == current_user %>
-        <div class="flex gap-2">
-          <%= link_to edit_post_path(@post), class: "btn btn-secondary btn-sm" do %>
-            <i class="fas fa-edit"></i>
-            Edit
-          <% end %>
-          <%= button_to post_path(@post), method: :delete, 
-              class: "btn btn-danger btn-sm", 
-              data: { confirm: "Are you sure?" } do %>
-            <i class="fas fa-trash"></i>
-            Delete
-          <% end %>
-        </div>
+      <span class="font-semibold text-lg"><%= @post.vote_score %></span>
+      <%= button_to downvote_post_path(@post), method: :post, class: "btn btn-sm" do %>
+        <i class="fas fa-thumbs-down"></i>
       <% end %>
     </div>
+    <div class="text-sm text-muted">
+      <%= pluralize(@post.upvotes || 0, 'upvote') %> • 
+      <%= pluralize(@post.downvotes || 0, 'downvote') %>
+    </div>
+    
+    <!-- Moderation Actions -->
+    <% if user_signed_in? && current_user.can_moderate? %>
+      <div class="flex gap-2">
+        <% if @post.pinned? %>
+          <%= button_to unpin_post_path(@post), method: :post, class: "btn btn-warning btn-sm" do %>
+            <i class="fas fa-thumbtack"></i>
+            Unpin
+          <% end %>
+        <% else %>
+          <%= button_to pin_post_path(@post), method: :post, class: "btn btn-success btn-sm" do %>
+            <i class="fas fa-thumbtack"></i>
+            Pin
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
   </div>
 </div>
 
-<!-- Post Content -->
-<div class="card mb-6">
-  <div class="card-header">
-    <div class="flex items-center gap-2">
-      <span class="college-badge">
-        <i class="fas fa-university"></i>
-        <%= @post.user.college %>
-      </span>
-      <span class="text-sm text-muted">
-        <i class="fas fa-folder"></i>
-        <%= @post.category.name %>
-      </span>
-    </div>
-    
-    <div class="text-sm text-muted">
-      <i class="fas fa-clock"></i>
-      <%= @post.created_at.strftime("%B %d, %Y at %I:%M %p") %>
-    </div>
-  </div>
-  
-  <h1 class="card-title text-2xl"><%= @post.title %></h1>
-  
-  <div class="card-meta">
-    <span>
-      <i class="fas fa-user"></i>
-      <%= @post.user.display_name %>
-    </span>
-    <span>
-      <i class="fas fa-comments"></i>
-      <%= @post.comments_count %> comments
-    </span>
-  </div>
-  
-  <div class="card-content prose max-w-none">
+<div class="card">
+  <div class="card-content">
     <%= simple_format(@post.content) %>
   </div>
 </div>
 
-<!-- Comments Section -->
 <div class="comments-section">
-  <h3 class="text-xl font-semibold mb-4">
-    <i class="fas fa-comments"></i>
-    Comments (<%= @comments.count %>)
-  </h3>
+  <h3 class="mb-4">Comments (<%= @post.comments_count %>)</h3>
   
-  <!-- Add Comment Form -->
   <% if user_signed_in? %>
     <div class="card mb-6">
       <h4 class="card-title mb-4">Add a Comment</h4>
-      <%= form_with model: [@post, @comment], local: true do |f| %>
+      <%= form_with model: [@post, Comment.new], local: true, html: { class: "comment-form" } do |f| %>
         <div class="form-group">
           <%= f.text_area :content, 
+              class: "form-control", 
               placeholder: "Share your thoughts...",
-              class: "form-control",
-              rows: 4 %>
+              rows: 4,
+              required: true %>
         </div>
         <div class="flex justify-end">
           <%= f.submit "Post Comment", class: "btn btn-primary" %>
@@ -87,52 +100,82 @@
     </div>
   <% else %>
     <div class="card mb-6 text-center py-6">
-      <p class="text-muted mb-4">Please sign in to add a comment.</p>
-      <%= link_to "Sign In", new_user_session_path, class: "btn btn-primary" %>
+      <i class="fas fa-sign-in-alt text-3xl text-muted mb-4"></i>
+      <h4 class="text-lg font-semibold mb-2">Sign in to comment</h4>
+      <p class="text-muted mb-4">Join the discussion by signing in to your account.</p>
+      <div class="flex gap-2 justify-center">
+        <%= link_to "Sign In", new_user_session_path, class: "btn btn-primary" %>
+        <%= link_to "Sign Up", new_user_registration_path, class: "btn btn-secondary" %>
+      </div>
     </div>
   <% end %>
   
-  <!-- Comments List -->
   <% if @comments.any? %>
-    <div class="space-y-4">
+    <div class="space-y-4" id="comments-list">
       <% @comments.each do |comment| %>
-        <div class="comment">
+        <div class="comment" id="comment-<%= comment.id %>">
           <div class="comment-header">
             <div class="flex items-center gap-2">
               <span class="comment-author"><%= comment.user.display_name %></span>
-              <span class="college-badge">
+              <span class="comment-meta">
                 <i class="fas fa-university"></i>
                 <%= comment.user.college %>
               </span>
-            </div>
-            
-            <div class="flex items-center gap-4">
               <span class="comment-meta">
                 <i class="fas fa-clock"></i>
                 <%= time_ago_in_words(comment.created_at) %> ago
               </span>
-              
-              <% if user_signed_in? && comment.user == current_user %>
-                <%= button_to post_comment_path(@post, comment), 
-                    method: :delete,
-                    class: "btn btn-danger btn-sm",
-                    data: { confirm: "Are you sure?" } do %>
-                  <i class="fas fa-trash"></i>
-                <% end %>
-              <% end %>
             </div>
+            
+            <% if user_signed_in? && comment.user == current_user %>
+              <%= button_to post_comment_path(@post, comment), 
+                  method: :delete, 
+                  class: "btn btn-danger btn-sm", 
+                  data: { confirm: "Are you sure you want to delete this comment?" } do %>
+                <i class="fas fa-trash"></i>
+              <% end %>
+            <% end %>
           </div>
-          
           <div class="comment-content">
             <%= simple_format(comment.content) %>
           </div>
         </div>
       <% end %>
     </div>
+    
+    <div class="pagination">
+      <%= paginate @comments %>
+    </div>
   <% else %>
     <div class="text-center py-8">
       <i class="fas fa-comments text-4xl text-muted mb-4"></i>
-      <p class="text-muted">No comments yet. Be the first to comment!</p>
+      <h3 class="text-xl font-semibold mb-2">No comments yet</h3>
+      <p class="text-muted mb-4">Be the first to start the discussion!</p>
+      <% unless user_signed_in? %>
+        <%= link_to "Sign In to Comment", new_user_session_path, class: "btn btn-primary" %>
+      <% end %>
     </div>
   <% end %>
 </div>
+
+<script>
+// Auto-refresh comments after posting
+document.addEventListener('DOMContentLoaded', function() {
+  const commentForm = document.querySelector('.comment-form');
+  if (commentForm) {
+    commentForm.addEventListener('submit', function() {
+      // Show loading state
+      const submitBtn = this.querySelector('input[type="submit"]');
+      const originalText = submitBtn.value;
+      submitBtn.value = 'Posting...';
+      submitBtn.disabled = true;
+      
+      // Re-enable after a short delay (form will redirect)
+      setTimeout(() => {
+        submitBtn.value = originalText;
+        submitBtn.disabled = false;
+      }, 2000);
+    });
+  }
+});
+</script>

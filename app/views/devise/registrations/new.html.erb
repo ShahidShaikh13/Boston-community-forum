@@ -1,38 +1,146 @@
-<h2>Sign up</h2>
-
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
-
-  <div class="form-group">
-    <%= f.label :email, class: "form-label" %>
-    <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control" %>
+<div class="mb-6">
+  <div class="text-center mb-8">
+    <h1>Join Boston Campus Forum</h1>
+    <p class="text-muted">Connect with students from Boston-area colleges</p>
   </div>
 
-  <div class="form-group">
-    <%= f.label :college, class: "form-label" %>
-    <%= f.select :college, 
-        User::BOSTON_COLLEGES,
-        { prompt: "Select your college..." },
-        { class: "form-select", required: true } %>
-  </div>
+  <div class="max-w-md mx-auto">
+    <div class="card">
+      <h2 class="card-title mb-6">Create Your Account</h2>
+      
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "registration-form" }) do |f| %>
+        <%= render "devise/shared/error_messages", resource: resource %>
 
-  <div class="form-group">
-    <%= f.label :password, class: "form-label" %>
-    <% if @minimum_password_length %>
-    <em>(<%= @minimum_password_length %> characters minimum)</em>
-    <% end %>
-    <%= f.password_field :password, autocomplete: "new-password", class: "form-control" %>
-  </div>
+        <div class="form-group">
+          <%= f.label :email, class: "form-label" do %>
+            <i class="fas fa-envelope"></i>
+            Email Address
+          <% end %>
+          <%= f.email_field :email, 
+              autofocus: true, 
+              autocomplete: "email",
+              class: "form-control",
+              placeholder: "your.email@college.edu",
+              required: true %>
+          <small class="text-muted">Use your college email address</small>
+        </div>
 
-  <div class="form-group">
-    <%= f.label :password_confirmation, class: "form-label" %>
-    <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control" %>
-  </div>
+        <div class="form-group">
+          <%= f.label :college, class: "form-label" do %>
+            <i class="fas fa-university"></i>
+            Your College
+          <% end %>
+          <%= f.select :college, 
+              User::BOSTON_COLLEGES,
+              { prompt: "Select your college" },
+              { class: "form-select", required: true } %>
+        </div>
 
-  <div class="flex gap-4">
-    <%= f.submit "Sign up", class: "btn btn-primary" %>
-    <%= link_to "Sign in", new_session_path(resource_name), class: "btn btn-secondary" %>
-  </div>
-<% end %>
+        <div class="form-group">
+          <%= f.label :password, class: "form-label" do %>
+            <i class="fas fa-lock"></i>
+            Password
+          <% end %>
+          <%= f.password_field :password, 
+              autocomplete: "new-password",
+              class: "form-control",
+              placeholder: "Create a strong password",
+              required: true %>
+          <small class="text-muted">Minimum 6 characters</small>
+        </div>
 
-<%= render "devise/shared/links" %>
+        <div class="form-group">
+          <%= f.label :password_confirmation, class: "form-label" do %>
+            <i class="fas fa-lock"></i>
+            Confirm Password
+          <% end %>
+          <%= f.password_field :password_confirmation, 
+              autocomplete: "new-password",
+              class: "form-control",
+              placeholder: "Confirm your password",
+              required: true %>
+        </div>
+
+        <div class="form-group">
+          <div class="flex items-center gap-2">
+            <input type="checkbox" id="terms" required class="form-checkbox">
+            <label for="terms" class="text-sm">
+              I agree to the 
+              <%= link_to "Terms of Service", terms_path, class: "text-primary-color hover:underline", target: "_blank" %> 
+              and 
+              <%= link_to "Privacy Policy", privacy_path, class: "text-primary-color hover:underline", target: "_blank" %>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <%= f.submit "Create Account", class: "btn btn-primary w-full" %>
+        </div>
+      <% end %>
+
+      <div class="text-center mt-6">
+        <p class="text-muted">Already have an account?</p>
+        <%= link_to "Sign In", new_user_session_path, class: "btn btn-secondary" %>
+      </div>
+    </div>
+
+    <div class="card mt-6">
+      <h3 class="card-title mb-4">Why Join?</h3>
+      <div class="space-y-3">
+        <div class="flex items-center gap-3">
+          <i class="fas fa-users text-primary-color"></i>
+          <span class="text-sm">Connect with students from 12+ Boston colleges</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <i class="fas fa-comments text-primary-color"></i>
+          <span class="text-sm">Share experiences and ask questions</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <i class="fas fa-home text-primary-color"></i>
+          <span class="text-sm">Find housing, roommates, and local events</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <i class="fas fa-book text-primary-color"></i>
+          <span class="text-sm">Get academic help and study groups</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.querySelector('.registration-form');
+  const submitBtn = form.querySelector('input[type="submit"]');
+  
+  form.addEventListener('submit', function() {
+    // Show loading state
+    submitBtn.value = 'Creating Account...';
+    submitBtn.disabled = true;
+    
+    // Re-enable after a delay (form will redirect on success)
+    setTimeout(() => {
+      submitBtn.value = 'Create Account';
+      submitBtn.disabled = false;
+    }, 3000);
+  });
+  
+  // Password strength indicator
+  const passwordField = document.querySelector('#user_password');
+  const confirmField = document.querySelector('#user_password_confirmation');
+  
+  function checkPasswordMatch() {
+    const password = passwordField.value;
+    const confirm = confirmField.value;
+    
+    if (confirm && password !== confirm) {
+      confirmField.style.borderColor = 'var(--danger-color)';
+    } else {
+      confirmField.style.borderColor = '';
+    }
+  }
+  
+  passwordField.addEventListener('input', checkPasswordMatch);
+  confirmField.addEventListener('input', checkPasswordMatch);
+});
+</script>

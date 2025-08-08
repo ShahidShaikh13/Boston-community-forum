@@ -1,34 +1,26 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Boston Campus Forum" %></title>
+    <title>Boston Campus Forum</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
-
-    <%= yield :head %>
-
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+    <meta name="csrf-param" content="authenticity_token" />
+    <meta name="csrf-token" content="<%= form_authenticity_token %>" />
 
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload", cache: false %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="<%= 'dark-theme' if cookies[:theme] == 'dark' %>">
+  <body class="dark-theme">
     <!-- Navigation -->
     <nav class="navbar">
       <div class="nav-container">
@@ -38,7 +30,7 @@
             <span>Boston Campus Forum</span>
           <% end %>
         </div>
-
+        
         <div class="nav-menu">
           <%= link_to "Home", root_path, class: "nav-link" %>
           <%= link_to "Posts", posts_path, class: "nav-link" %>
@@ -54,6 +46,13 @@
               <div class="dropdown-menu">
                 <%= link_to "Profile", profile_path, class: "dropdown-item" %>
                 <%= link_to "Edit Profile", edit_user_registration_path, class: "dropdown-item" %>
+                <% if current_user.can_moderate? %>
+                  <div class="dropdown-divider"></div>
+                  <span class="dropdown-item text-muted">
+                    <i class="fas fa-shield-alt"></i>
+                    Moderator
+                  </span>
+                <% end %>
                 <%= button_to "Sign Out", destroy_user_session_path, method: :delete, class: "dropdown-item" %>
               </div>
             </div>
@@ -63,7 +62,7 @@
           <% end %>
           
           <button class="theme-toggle" onclick="toggleTheme()">
-            <i class="fas fa-moon"></i>
+            <i class="fas fa-sun"></i>
           </button>
         </div>
       </div>
@@ -71,20 +70,20 @@
 
     <!-- Flash Messages -->
     <% if notice %>
-      <div class="flash flash-notice">
-        <i class="fas fa-info-circle"></i>
-        <%= notice %>
-        <button class="flash-close" onclick="this.parentElement.remove()">
+      <div class="flash flash-notice" id="flash-notice">
+        <i class="fas fa-check-circle"></i>
+        <span><%= notice %></span>
+        <button onclick="this.parentElement.remove()" class="flash-close">
           <i class="fas fa-times"></i>
         </button>
       </div>
     <% end %>
-
+    
     <% if alert %>
-      <div class="flash flash-alert">
+      <div class="flash flash-alert" id="flash-alert">
         <i class="fas fa-exclamation-triangle"></i>
-        <%= alert %>
-        <button class="flash-close" onclick="this.parentElement.remove()">
+        <span><%= alert %></span>
+        <button onclick="this.parentElement.remove()" class="flash-close">
           <i class="fas fa-times"></i>
         </button>
       </div>
@@ -98,7 +97,44 @@
     <!-- Footer -->
     <footer class="footer">
       <div class="footer-container">
-        <p>&copy; 2024 Boston Campus Forum. Built with Rails & SCSS.</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <h4 class="text-lg font-semibold mb-4">Boston Campus Forum</h4>
+            <p class="text-muted">Connect with students from Boston-area colleges. Share experiences, ask questions, and build your community.</p>
+          </div>
+          <div>
+            <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+            <ul class="space-y-2">
+              <li><%= link_to "All Posts", posts_path, class: "text-muted hover:text-primary-color" %></li>
+              <li><%= link_to "Categories", categories_path, class: "text-muted hover:text-primary-color" %></li>
+              <% if user_signed_in? %>
+                <li><%= link_to "My Profile", profile_path, class: "text-muted hover:text-primary-color" %></li>
+              <% else %>
+                <li><%= link_to "Sign Up", new_user_registration_path, class: "text-muted hover:text-primary-color" %></li>
+              <% end %>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-lg font-semibold mb-4">Community Stats</h4>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between">
+                <span class="text-muted">Total Posts:</span>
+                <span class="font-semibold"><%= Post.count %></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-muted">Total Users:</span>
+                <span class="font-semibold"><%= User.count %></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-muted">Total Comments:</span>
+                <span class="font-semibold"><%= Comment.count %></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="border-t border-border-color mt-8 pt-8 text-center">
+          <p class="text-muted">&copy; <%= Date.current.year %> Boston Campus Forum. Built with Ruby on Rails.</p>
+        </div>
       </div>
     </footer>
 
@@ -108,7 +144,34 @@
         const theme = body.classList.contains('dark-theme') ? 'light' : 'dark';
         body.classList.toggle('dark-theme');
         document.cookie = `theme=${theme};path=/;max-age=31536000`;
+        
+        // Update theme toggle icon
+        const themeToggle = document.querySelector('.theme-toggle i');
+        if (body.classList.contains('dark-theme')) {
+          themeToggle.className = 'fas fa-sun';
+        } else {
+          themeToggle.className = 'fas fa-moon';
+        }
       }
+      
+      // Set initial theme based on cookie
+      document.addEventListener('DOMContentLoaded', function() {
+        const theme = document.cookie.split('; ').find(row => row.startsWith('theme='));
+        if (theme && theme.split('=')[1] === 'light') {
+          document.body.classList.remove('dark-theme');
+          const themeToggle = document.querySelector('.theme-toggle i');
+          themeToggle.className = 'fas fa-moon';
+        }
+        
+        // Auto-hide flash messages after 5 seconds
+        const flashMessages = document.querySelectorAll('.flash');
+        flashMessages.forEach(message => {
+          setTimeout(() => {
+            message.style.opacity = '0';
+            setTimeout(() => message.remove(), 300);
+          }, 5000);
+        });
+      });
     </script>
   </body>
 </html>

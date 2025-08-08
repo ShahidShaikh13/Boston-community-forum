@@ -1,7 +1,7 @@
-<div class="hero-section mb-8">
+<div class="hero-section">
   <div class="text-center">
     <h1>Welcome to Boston Campus Forum</h1>
-    <p class="text-lg text-muted mb-6">Connect with students from Boston-area colleges. Share experiences, ask questions, and build your community.</p>
+    <p>Connect with students from Boston-area colleges. Share experiences, ask questions, and build your community.</p>
     
     <% unless user_signed_in? %>
       <div class="flex gap-4 justify-center">
@@ -14,9 +14,9 @@
   </div>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-  <!-- Recent Posts -->
-  <div class="lg:col-span-2">
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+  <!-- Main Content -->
+  <div class="lg:col-span-3">
     <div class="card">
       <div class="card-header">
         <h2>Recent Posts</h2>
@@ -24,54 +24,66 @@
       </div>
       
       <% if @recent_posts.any? %>
-        <% @recent_posts.each do |post| %>
-          <div class="post-preview mb-6 p-4 border border-border-color rounded-lg hover:shadow-md transition-shadow">
-            <div class="flex items-center gap-2 mb-2">
-              <span class="college-badge">
-                <i class="fas fa-university"></i>
-                <%= post.user.college %>
-              </span>
-              <span class="text-sm text-muted">
-                <i class="fas fa-folder"></i>
-                <%= post.category.name %>
-              </span>
-            </div>
-            
-            <h3 class="text-lg font-semibold mb-2">
-              <%= link_to post.title, post_path(post), class: "hover:text-primary-color" %>
-            </h3>
-            
-            <p class="text-muted mb-3"><%= post.excerpt %></p>
-            
-            <div class="flex items-center justify-between text-sm text-muted">
-              <div class="flex items-center gap-4">
-                <span>
-                  <i class="fas fa-user"></i>
-                  <%= post.user.display_name %>
+        <div class="space-y-4">
+          <% @recent_posts.each do |post| %>
+            <div class="post-preview">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="college-badge">
+                  <i class="fas fa-university"></i>
+                  <%= post.user.college %>
                 </span>
-                <span>
-                  <i class="fas fa-clock"></i>
-                  <%= time_ago_in_words(post.created_at) %> ago
-                </span>
-                <span>
-                  <i class="fas fa-comments"></i>
-                  <%= post.comments_count %> comments
+                <span class="text-sm text-muted">
+                  <i class="fas fa-folder"></i>
+                  <%= post.category.name %>
                 </span>
               </div>
               
-              <% if user_signed_in? && post.user == current_user %>
-                <div class="flex gap-2">
-                  <%= link_to "Edit", edit_post_path(post), class: "btn btn-secondary btn-sm" %>
-                  <%= button_to "Delete", post_path(post), method: :delete, 
-                      class: "btn btn-danger btn-sm", 
-                      data: { confirm: "Are you sure?" } %>
+              <h3>
+                <%= link_to post.title, post_path(post) %>
+              </h3>
+              
+              <p><%= post.excerpt %></p>
+              
+              <div class="flex items-center justify-between text-sm text-muted">
+                <div class="flex items-center gap-4">
+                  <span>
+                    <i class="fas fa-user"></i>
+                    <%= post.user.display_name %>
+                  </span>
+                  <span>
+                    <i class="fas fa-clock"></i>
+                    <%= time_ago_in_words(post.created_at) %> ago
+                  </span>
+                  <span>
+                    <i class="fas fa-comments"></i>
+                    <%= post.comments_count %> comments
+                  </span>
                 </div>
-              <% end %>
+                
+                <% if user_signed_in? && post.user == current_user %>
+                  <div class="flex gap-2">
+                    <%= link_to "Edit", edit_post_path(post), class: "btn btn-secondary btn-sm" %>
+                    <%= button_to "Delete", post_path(post), method: :delete, 
+                        class: "btn btn-danger btn-sm", 
+                        data: { confirm: "Are you sure?" } %>
+                  </div>
+                <% end %>
+              </div>
             </div>
-          </div>
-        <% end %>
+          <% end %>
+        </div>
       <% else %>
-        <p class="text-center text-muted py-8">No posts yet. Be the first to create one!</p>
+        <div class="text-center py-12">
+          <i class="fas fa-edit text-4xl text-muted mb-4"></i>
+          <h3 class="text-xl font-semibold mb-2">No posts yet</h3>
+          <p class="text-muted mb-4">Be the first to create one!</p>
+          <% if user_signed_in? %>
+            <%= link_to new_post_path, class: "btn btn-primary" do %>
+              <i class="fas fa-plus"></i>
+              Create First Post
+            <% end %>
+          <% end %>
+        </div>
       <% end %>
     </div>
   </div>
@@ -81,12 +93,19 @@
     <!-- Categories -->
     <div class="card">
       <h3 class="card-title mb-4">Categories</h3>
-      <div class="space-y-2">
+      <div class="space-y-3">
         <% @categories.each do |category| %>
-          <%= link_to category_path(category), class: "flex items-center justify-between p-2 rounded hover:bg-secondary-bg transition-colors" do %>
-            <span><%= category.name %></span>
-            <span class="text-sm text-muted"><%= category.posts_count %></span>
-          <% end %>
+          <div class="category-card">
+            <div class="category-icon" style="background-color: var(--primary-color);">
+              <i class="fas fa-folder"></i>
+            </div>
+            <div class="category-title"><%= category.name %></div>
+            <div class="category-description"><%= category.description %></div>
+            <div class="category-stats">
+              <span><%= pluralize(category.posts_count, 'post') %></span>
+              <%= link_to "View", category_path(category), class: "text-primary-color hover:underline" %>
+            </div>
+          </div>
         <% end %>
       </div>
     </div>
@@ -96,9 +115,9 @@
       <h3 class="card-title mb-4">Colleges</h3>
       <div class="space-y-2">
         <% @colleges.each do |college| %>
-          <%= link_to posts_path(college: college), class: "flex items-center p-2 rounded hover:bg-secondary-bg transition-colors" do %>
-            <i class="fas fa-university text-muted mr-2"></i>
-            <span><%= college %></span>
+          <%= link_to posts_path(college: college), class: "flex items-center p-3 rounded hover:bg-secondary-bg transition-colors" do %>
+            <i class="fas fa-university text-muted mr-3"></i>
+            <span class="text-sm"><%= college %></span>
           <% end %>
         <% end %>
       </div>
@@ -108,17 +127,17 @@
     <div class="card">
       <h3 class="card-title mb-4">Quick Stats</h3>
       <div class="space-y-3">
-        <div class="flex justify-between">
-          <span>Total Posts</span>
-          <span class="font-semibold"><%= Post.count %></span>
+        <div class="flex justify-between items-center">
+          <span class="text-sm">Total Posts</span>
+          <span class="font-semibold text-lg"><%= Post.count %></span>
         </div>
-        <div class="flex justify-between">
-          <span>Total Users</span>
-          <span class="font-semibold"><%= User.count %></span>
+        <div class="flex justify-between items-center">
+          <span class="text-sm">Total Users</span>
+          <span class="font-semibold text-lg"><%= User.count %></span>
         </div>
-        <div class="flex justify-between">
-          <span>Total Comments</span>
-          <span class="font-semibold"><%= Comment.count %></span>
+        <div class="flex justify-between items-center">
+          <span class="text-sm">Total Comments</span>
+          <span class="font-semibold text-lg"><%= Comment.count %></span>
         </div>
       </div>
     </div>

@@ -14,6 +14,19 @@ class Post < ApplicationRecord
   scope :by_college, ->(college) { joins(:user).where(users: { college: college }) }
   scope :by_category, ->(category_id) { where(category_id: category_id) }
 
+  # Voting functionality
+  def upvote!
+    increment!(:upvotes)
+  end
+
+  def downvote!
+    increment!(:downvotes)
+  end
+
+  def vote_score
+    (upvotes || 0) - (downvotes || 0)
+  end
+
   def comments_count
     comments.count
   end

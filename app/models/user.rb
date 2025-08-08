@@ -31,7 +31,24 @@ class User < ApplicationRecord
   # Validations
   validates :college, presence: true, inclusion: { in: BOSTON_COLLEGES }
 
+  # Scopes
+  scope :moderators, -> { where(moderator: true) }
+
   def display_name
     email.split('@').first
+  end
+
+  def moderator?
+    moderator == true
+  end
+
+  def can_moderate?
+    moderator? || admin?
+  end
+
+  def admin?
+    # For now, we'll consider the first user as admin
+    # In a real app, you'd have a proper admin system
+    id == 1
   end
 end

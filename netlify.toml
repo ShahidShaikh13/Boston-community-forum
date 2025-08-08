@@ -1,0 +1,22 @@
+[build]
+  command = "bundle install && rails assets:precompile"
+  publish = "public"
+  functions = "lambda"
+
+[build.environment]
+  RAILS_ENV = "production"
+  NODE_ENV = "production"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[context.production.environment]
+  RAILS_ENV = "production"
+
+[context.deploy-preview.environment]
+  RAILS_ENV = "staging"
+
+[context.branch-deploy.environment]
+  RAILS_ENV = "staging" 

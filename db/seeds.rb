@@ -56,19 +56,76 @@ end
 
 puts "Created #{Category.count} categories"
 
-# Create Sample Users
+# Create Sample Users - More realistic and diverse
 puts "Creating sample users..."
 users_data = [
+  # Northeastern University
   { email: "john.smith@northeastern.edu", college: "Northeastern University" },
+  { email: "maria.garcia@northeastern.edu", college: "Northeastern University" },
+  { email: "james.wilson@northeastern.edu", college: "Northeastern University" },
+  { email: "sophia.chen@northeastern.edu", college: "Northeastern University" },
+  
+  # Boston University
   { email: "sarah.jones@bu.edu", college: "Boston University" },
+  { email: "michael.brown@bu.edu", college: "Boston University" },
+  { email: "emma.davis@bu.edu", college: "Boston University" },
+  { email: "robert.taylor@bu.edu", college: "Boston University" },
+  
+  # MIT
   { email: "mike.chen@mit.edu", college: "Massachusetts Institute of Technology (MIT)" },
+  { email: "anna.zhang@mit.edu", college: "Massachusetts Institute of Technology (MIT)" },
+  { email: "kevin.patel@mit.edu", college: "Massachusetts Institute of Technology (MIT)" },
+  
+  # Harvard University
   { email: "emily.davis@harvard.edu", college: "Harvard University" },
+  { email: "william.johnson@harvard.edu", college: "Harvard University" },
+  { email: "olivia.martinez@harvard.edu", college: "Harvard University" },
+  
+  # UMass Boston
   { email: "alex.rodriguez@umb.edu", college: "University of Massachusetts Boston" },
+  { email: "jessica.lee@umb.edu", college: "University of Massachusetts Boston" },
+  { email: "daniel.kim@umb.edu", college: "University of Massachusetts Boston" },
+  
+  # Boston College
   { email: "jessica.wilson@bc.edu", college: "Boston College" },
+  { email: "christopher.anderson@bc.edu", college: "Boston College" },
+  { email: "ashley.thomas@bc.edu", college: "Boston College" },
+  
+  # Emerson College
   { email: "david.kim@emerson.edu", college: "Emerson College" },
+  { email: "rachel.green@emerson.edu", college: "Emerson College" },
+  { email: "brandon.white@emerson.edu", college: "Emerson College" },
+  
+  # Suffolk University
   { email: "lisa.thompson@suffolk.edu", college: "Suffolk University" },
+  { email: "matthew.clark@suffolk.edu", college: "Suffolk University" },
+  { email: "amanda.lewis@suffolk.edu", college: "Suffolk University" },
+  
+  # Simmons University
   { email: "ryan.patel@simmons.edu", college: "Simmons University" },
-  { email: "amanda.lee@wit.edu", college: "Wentworth Institute of Technology" }
+  { email: "lauren.hall@simmons.edu", college: "Simmons University" },
+  { email: "tyler.allen@simmons.edu", college: "Simmons University" },
+  
+  # Wentworth Institute
+  { email: "amanda.lee@wit.edu", college: "Wentworth Institute of Technology" },
+  { email: "nathan.young@wit.edu", college: "Wentworth Institute of Technology" },
+  { email: "stephanie.king@wit.edu", college: "Wentworth Institute of Technology" },
+  
+  # MassArt
+  { email: "isabella.wright@massart.edu", college: "Massachusetts College of Art and Design" },
+  { email: "ethan.scott@massart.edu", college: "Massachusetts College of Art and Design" },
+  
+  # Berklee
+  { email: "madison.torres@berklee.edu", college: "Berklee College of Music" },
+  { email: "logan.morris@berklee.edu", college: "Berklee College of Music" },
+  
+  # Tufts
+  { email: "ava.nguyen@tufts.edu", college: "Tufts University" },
+  { email: "sebastian.carter@tufts.edu", college: "Tufts University" },
+  
+  # Brandeis
+  { email: "chloe.mitchell@brandeis.edu", college: "Brandeis University" },
+  { email: "gabriel.perez@brandeis.edu", college: "Brandeis University" }
 ]
 
 users = []
@@ -84,7 +141,7 @@ end
 
 puts "Created #{User.count} users"
 
-# Create Sample Posts
+# Create Sample Posts - More diverse and realistic
 puts "Creating sample posts..."
 posts_data = [
   {
@@ -146,6 +203,156 @@ posts_data = [
     content: "Struggling with Python assignment for my CS class. Anyone available to help? Can meet on campus or virtually. Will buy coffee!",
     category_name: "Academic",
     user_email: "lisa.thompson@suffolk.edu"
+  },
+  {
+    title: "Looking for gym buddy - Planet Fitness",
+    content: "Looking for a workout partner at Planet Fitness in Allston. I usually go around 6-7 PM on weekdays. Anyone interested in joining?",
+    category_name: "Sports & Recreation",
+    user_email: "maria.garcia@northeastern.edu"
+  },
+  {
+    title: "Selling bike - $150",
+    content: "Selling my mountain bike. Good condition, perfect for getting around campus. Pickup in Brighton. DM for photos!",
+    category_name: "For Sale",
+    user_email: "michael.brown@bu.edu"
+  },
+  {
+    title: "Study abroad advice needed",
+    content: "Thinking about studying abroad next semester. Anyone have experience with programs in Europe? Looking for recommendations!",
+    category_name: "General Discussion",
+    user_email: "emma.davis@bu.edu"
+  },
+  {
+    title: "Coffee meetup - This Saturday",
+    content: "Anyone want to grab coffee this Saturday? Thinking of meeting at Thinking Cup in Back Bay. Good place to network and make friends!",
+    category_name: "Events",
+    user_email: "anna.zhang@mit.edu"
+  },
+  {
+    title: "Help with calculus homework",
+    content: "Stuck on some calculus problems. Anyone good at math who can help? Can meet at the library or virtually.",
+    category_name: "Academic",
+    user_email: "kevin.patel@mit.edu"
+  },
+  {
+    title: "Best study spots on campus?",
+    content: "Looking for quiet places to study. Any recommendations for good study spots with good wifi?",
+    category_name: "General Discussion",
+    user_email: "william.johnson@harvard.edu"
+  },
+  {
+    title: "Selling textbooks - Various subjects",
+    content: "Selling textbooks for various classes. DM me for the list. All in good condition, reasonable prices!",
+    category_name: "For Sale",
+    user_email: "olivia.martinez@harvard.edu"
+  },
+  {
+    title: "Looking for ride to airport",
+    content: "Need a ride to Logan Airport on Friday at 6 AM. Willing to pay for gas and parking. DM me if available!",
+    category_name: "Rideshare",
+    user_email: "jessica.lee@umb.edu"
+  },
+  {
+    title: "Roommate needed - Brighton area",
+    content: "Looking for a roommate in Brighton. 2-bedroom apartment, $900/month including utilities. Available immediately.",
+    category_name: "Roommates",
+    user_email: "daniel.kim@umb.edu"
+  },
+  {
+    title: "Intramural soccer team",
+    content: "Starting an intramural soccer team. Need players of all skill levels. Games are on Saturdays. DM if interested!",
+    category_name: "Sports & Recreation",
+    user_email: "christopher.anderson@bc.edu"
+  },
+  {
+    title: "Free furniture - Moving out",
+    content: "Giving away furniture: desk, chair, small bookshelf. Pickup in Allston. First come, first served!",
+    category_name: "For Sale",
+    user_email: "ashley.thomas@bc.edu"
+  },
+  {
+    title: "Photography club meeting",
+    content: "Photography club meeting this Thursday at 7 PM. All skill levels welcome. We'll be discussing street photography techniques.",
+    category_name: "Events",
+    user_email: "rachel.green@emerson.edu"
+  },
+  {
+    title: "Selling camera equipment",
+    content: "Selling DSLR camera and lenses. Great for photography students. DM for details and photos.",
+    category_name: "For Sale",
+    user_email: "brandon.white@emerson.edu"
+  },
+  {
+    title: "Help with resume writing",
+    content: "Need help with my resume for internship applications. Anyone have experience with resume writing?",
+    category_name: "General Discussion",
+    user_email: "matthew.clark@suffolk.edu"
+  },
+  {
+    title: "Looking for study group - Business Law",
+    content: "Looking for study group for Business Law class. We can meet on campus or virtually. Anyone interested?",
+    category_name: "Academic",
+    user_email: "amanda.lewis@suffolk.edu"
+  },
+  {
+    title: "Free concert tickets - Tonight",
+    content: "Have 2 free tickets to a concert tonight. Can't go anymore. DM me if interested!",
+    category_name: "Events",
+    user_email: "lauren.hall@simmons.edu"
+  },
+  {
+    title: "Selling laptop - $400",
+    content: "Selling my Dell laptop. Good for basic school work. Pickup in Fenway area.",
+    category_name: "For Sale",
+    user_email: "tyler.allen@simmons.edu"
+  },
+  {
+    title: "Looking for coding partner",
+    content: "Looking for someone to practice coding with. Working on web development projects. Anyone interested?",
+    category_name: "Technology",
+    user_email: "nathan.young@wit.edu"
+  },
+  {
+    title: "Best restaurants near campus?",
+    content: "Looking for restaurant recommendations near campus. Any hidden gems?",
+    category_name: "Food & Dining",
+    user_email: "stephanie.king@wit.edu"
+  },
+  {
+    title: "Art supplies for sale",
+    content: "Selling art supplies: paints, brushes, canvas. Great for art students. DM for list and prices.",
+    category_name: "For Sale",
+    user_email: "isabella.wright@massart.edu"
+  },
+  {
+    title: "Looking for band members",
+    content: "Looking for musicians to form a band. Need guitarist, bassist, and drummer. All genres welcome!",
+    category_name: "Events",
+    user_email: "madison.torres@berklee.edu"
+  },
+  {
+    title: "Study abroad in Japan",
+    content: "Anyone interested in studying abroad in Japan? Looking for travel buddies and advice!",
+    category_name: "General Discussion",
+    user_email: "ava.nguyen@tufts.edu"
+  },
+  {
+    title: "Selling musical instruments",
+    content: "Selling guitar, keyboard, and microphone. All in good condition. DM for details!",
+    category_name: "For Sale",
+    user_email: "logan.morris@berklee.edu"
+  },
+  {
+    title: "Looking for research participants",
+    content: "Conducting research study on social media usage. Need participants. $20 compensation. DM for details!",
+    category_name: "General Discussion",
+    user_email: "chloe.mitchell@brandeis.edu"
+  },
+  {
+    title: "Free tutoring - Math and Science",
+    content: "Offering free tutoring in math and science subjects. Available on weekends. DM me if interested!",
+    category_name: "Academic",
+    user_email: "gabriel.perez@brandeis.edu"
   }
 ]
 
@@ -165,7 +372,7 @@ end
 
 puts "Created #{Post.count} posts"
 
-# Create Sample Comments
+# Create Sample Comments - More diverse interactions
 puts "Creating sample comments..."
 comments_data = [
   {
@@ -217,6 +424,116 @@ comments_data = [
     content: "I can help with Python! What specific problem are you having?",
     post_title: "Need help with Python programming",
     user_email: "mike.chen@mit.edu"
+  },
+  {
+    content: "I'm interested in the gym buddy! What's your workout routine?",
+    post_title: "Looking for gym buddy - Planet Fitness",
+    user_email: "emma.davis@bu.edu"
+  },
+  {
+    content: "Is the bike still available? Can you send photos?",
+    post_title: "Selling bike - $150",
+    user_email: "maria.garcia@northeastern.edu"
+  },
+  {
+    content: "I studied in Spain last semester! Highly recommend it.",
+    post_title: "Study abroad advice needed",
+    user_email: "anna.zhang@mit.edu"
+  },
+  {
+    content: "I'd love to join! What time on Saturday?",
+    post_title: "Coffee meetup - This Saturday",
+    user_email: "kevin.patel@mit.edu"
+  },
+  {
+    content: "I can help with calculus! What specific problems?",
+    post_title: "Help with calculus homework",
+    user_email: "william.johnson@harvard.edu"
+  },
+  {
+    content: "The library on the 3rd floor is usually quiet.",
+    post_title: "Best study spots on campus?",
+    user_email: "olivia.martinez@harvard.edu"
+  },
+  {
+    content: "I need a ride too! Can we coordinate?",
+    post_title: "Looking for ride to airport",
+    user_email: "christopher.anderson@bc.edu"
+  },
+  {
+    content: "I'm interested in the soccer team! When do practices start?",
+    post_title: "Intramural soccer team",
+    user_email: "ashley.thomas@bc.edu"
+  },
+  {
+    content: "I'll take the desk and chair! When can I pick up?",
+    post_title: "Free furniture - Moving out",
+    user_email: "rachel.green@emerson.edu"
+  },
+  {
+    content: "I'm interested in joining the photography club!",
+    post_title: "Photography club meeting",
+    user_email: "brandon.white@emerson.edu"
+  },
+  {
+    content: "I can help with resume writing! DM me.",
+    post_title: "Help with resume writing",
+    user_email: "matthew.clark@suffolk.edu"
+  },
+  {
+    content: "Count me in for the study group!",
+    post_title: "Looking for study group - Business Law",
+    user_email: "amanda.lewis@suffolk.edu"
+  },
+  {
+    content: "I'll take the tickets! Still available?",
+    post_title: "Free concert tickets - Tonight",
+    user_email: "lauren.hall@simmons.edu"
+  },
+  {
+    content: "I'm interested in the laptop! What are the specs?",
+    post_title: "Selling laptop - $400",
+    user_email: "tyler.allen@simmons.edu"
+  },
+  {
+    content: "I'd love to practice coding together!",
+    post_title: "Looking for coding partner",
+    user_email: "nathan.young@wit.edu"
+  },
+  {
+    content: "Try the Italian place on Boylston Street!",
+    post_title: "Best restaurants near campus?",
+    user_email: "stephanie.king@wit.edu"
+  },
+  {
+    content: "I'm interested in the art supplies! What do you have?",
+    post_title: "Art supplies for sale",
+    user_email: "isabella.wright@massart.edu"
+  },
+  {
+    content: "I play guitar! Interested in joining the band.",
+    post_title: "Looking for band members",
+    user_email: "madison.torres@berklee.edu"
+  },
+  {
+    content: "I'm planning to study in Japan too!",
+    post_title: "Study abroad in Japan",
+    user_email: "ava.nguyen@tufts.edu"
+  },
+  {
+    content: "I'm interested in the guitar! What brand is it?",
+    post_title: "Selling musical instruments",
+    user_email: "logan.morris@berklee.edu"
+  },
+  {
+    content: "I'd be interested in participating in the study!",
+    post_title: "Looking for research participants",
+    user_email: "chloe.mitchell@brandeis.edu"
+  },
+  {
+    content: "I need help with calculus! When are you available?",
+    post_title: "Free tutoring - Math and Science",
+    user_email: "gabriel.perez@brandeis.edu"
   }
 ]
 
