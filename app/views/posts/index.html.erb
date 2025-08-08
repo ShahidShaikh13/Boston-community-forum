@@ -1,0 +1,127 @@
+<div class="mb-6">
+  <div class="flex items-center justify-between mb-4">
+    <h1>All Posts</h1>
+    <% if user_signed_in? %>
+      <%= link_to new_post_path, class: "btn btn-primary" do %>
+        <i class="fas fa-plus"></i>
+        New Post
+      <% end %>
+    <% end %>
+  </div>
+  
+  <!-- Filters -->
+  <div class="card mb-6">
+    <h3 class="card-title mb-4">Filters</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <%= select_tag :category_id, 
+            options_from_collection_for_select(@categories, :id, :name, params[:category_id]),
+            prompt: "All Categories",
+            class: "form-select",
+            onchange: "this.form.submit()" %>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">College</label>
+        <%= select_tag :college, 
+            options_for_select(@colleges, params[:college]),
+            prompt: "All Colleges",
+            class: "form-select",
+            onchange: "this.form.submit()" %>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Sort</label>
+        <%= select_tag :sort, 
+            options_for_select([
+              ['Newest First', 'recent'],
+              ['Oldest First', 'oldest'],
+              ['Most Comments', 'comments']
+            ], params[:sort]),
+            class: "form-select",
+            onchange: "this.form.submit()" %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% if @posts.any? %>
+  <div class="space-y-4">
+    <% @posts.each do |post| %>
+      <div class="card">
+        <div class="card-header">
+          <div class="flex items-center gap-2">
+            <span class="college-badge">
+              <i class="fas fa-university"></i>
+              <%= post.user.college %>
+            </span>
+            <span class="text-sm text-muted">
+              <i class="fas fa-folder"></i>
+              <%= post.category.name %>
+            </span>
+          </div>
+          
+          <% if user_signed_in? && post.user == current_user %>
+            <div class="flex gap-2">
+              <%= link_to edit_post_path(post), class: "btn btn-secondary btn-sm" do %>
+                <i class="fas fa-edit"></i>
+                Edit
+              <% end %>
+              <%= button_to post_path(post), method: :delete, 
+                  class: "btn btn-danger btn-sm", 
+                  data: { confirm: "Are you sure?" } do %>
+                <i class="fas fa-trash"></i>
+                Delete
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+        
+        <h2 class="card-title">
+          <%= link_to post.title, post_path(post), class: "hover:text-primary-color" %>
+        </h2>
+        
+        <div class="card-meta">
+          <span>
+            <i class="fas fa-user"></i>
+            <%= post.user.display_name %>
+          </span>
+          <span>
+            <i class="fas fa-clock"></i>
+            <%= time_ago_in_words(post.created_at) %> ago
+          </span>
+          <span>
+            <i class="fas fa-comments"></i>
+            <%= post.comments_count %> comments
+          </span>
+        </div>
+        
+        <div class="card-content">
+          <%= post.excerpt %>
+        </div>
+        
+        <div class="mt-4">
+          <%= link_to "Read More", post_path(post), class: "btn btn-primary btn-sm" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  
+  <!-- Pagination -->
+  <div class="pagination">
+    <%= paginate @posts %>
+  </div>
+<% else %>
+  <div class="card text-center py-12">
+    <i class="fas fa-inbox text-4xl text-muted mb-4"></i>
+    <h3 class="text-xl font-semibold mb-2">No posts found</h3>
+    <p class="text-muted mb-4">Try adjusting your filters or create the first post!</p>
+    <% if user_signed_in? %>
+      <%= link_to new_post_path, class: "btn btn-primary" do %>
+        <i class="fas fa-plus"></i>
+        Create First Post
+      <% end %>
+    <% end %>
+  </div>
+<% end %>

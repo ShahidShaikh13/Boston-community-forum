@@ -1,0 +1,42 @@
+<div class="mb-6">
+  <h1>Categories</h1>
+  <p class="text-muted">Browse posts by category</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  <% @categories.each do |category| %>
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title"><%= category.name %></h3>
+        <span class="text-sm text-muted">
+          <%= pluralize(category.posts_count, 'post') %>
+        </span>
+      </div>
+      
+      <div class="card-content">
+        <p class="text-muted mb-4"><%= category.description %></p>
+        
+        <% if category.posts.any? %>
+          <div class="mb-4">
+            <h4 class="text-sm font-semibold mb-2">Recent Posts</h4>
+            <div class="space-y-2">
+              <% category.posts.recent.limit(3).each do |post| %>
+                <div class="text-sm">
+                  <%= link_to post.title, post_path(post), class: "hover:text-primary-color" %>
+                  <div class="text-muted text-xs">
+                    by <%= post.user.display_name %> • <%= time_ago_in_words(post.created_at) %> ago
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+        
+        <%= link_to category_path(category), class: "btn btn-primary btn-sm" do %>
+          View All Posts
+          <i class="fas fa-arrow-right"></i>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

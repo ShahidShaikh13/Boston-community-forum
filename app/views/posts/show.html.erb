@@ -1,0 +1,138 @@
+<div class="mb-6">
+  <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center gap-4">
+      <%= link_to posts_path, class: "btn btn-secondary btn-sm" do %>
+        <i class="fas fa-arrow-left"></i>
+        Back to Posts
+      <% end %>
+      
+      <% if user_signed_in? && @post.user == current_user %>
+        <div class="flex gap-2">
+          <%= link_to edit_post_path(@post), class: "btn btn-secondary btn-sm" do %>
+            <i class="fas fa-edit"></i>
+            Edit
+          <% end %>
+          <%= button_to post_path(@post), method: :delete, 
+              class: "btn btn-danger btn-sm", 
+              data: { confirm: "Are you sure?" } do %>
+            <i class="fas fa-trash"></i>
+            Delete
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- Post Content -->
+<div class="card mb-6">
+  <div class="card-header">
+    <div class="flex items-center gap-2">
+      <span class="college-badge">
+        <i class="fas fa-university"></i>
+        <%= @post.user.college %>
+      </span>
+      <span class="text-sm text-muted">
+        <i class="fas fa-folder"></i>
+        <%= @post.category.name %>
+      </span>
+    </div>
+    
+    <div class="text-sm text-muted">
+      <i class="fas fa-clock"></i>
+      <%= @post.created_at.strftime("%B %d, %Y at %I:%M %p") %>
+    </div>
+  </div>
+  
+  <h1 class="card-title text-2xl"><%= @post.title %></h1>
+  
+  <div class="card-meta">
+    <span>
+      <i class="fas fa-user"></i>
+      <%= @post.user.display_name %>
+    </span>
+    <span>
+      <i class="fas fa-comments"></i>
+      <%= @post.comments_count %> comments
+    </span>
+  </div>
+  
+  <div class="card-content prose max-w-none">
+    <%= simple_format(@post.content) %>
+  </div>
+</div>
+
+<!-- Comments Section -->
+<div class="comments-section">
+  <h3 class="text-xl font-semibold mb-4">
+    <i class="fas fa-comments"></i>
+    Comments (<%= @comments.count %>)
+  </h3>
+  
+  <!-- Add Comment Form -->
+  <% if user_signed_in? %>
+    <div class="card mb-6">
+      <h4 class="card-title mb-4">Add a Comment</h4>
+      <%= form_with model: [@post, @comment], local: true do |f| %>
+        <div class="form-group">
+          <%= f.text_area :content, 
+              placeholder: "Share your thoughts...",
+              class: "form-control",
+              rows: 4 %>
+        </div>
+        <div class="flex justify-end">
+          <%= f.submit "Post Comment", class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="card mb-6 text-center py-6">
+      <p class="text-muted mb-4">Please sign in to add a comment.</p>
+      <%= link_to "Sign In", new_user_session_path, class: "btn btn-primary" %>
+    </div>
+  <% end %>
+  
+  <!-- Comments List -->
+  <% if @comments.any? %>
+    <div class="space-y-4">
+      <% @comments.each do |comment| %>
+        <div class="comment">
+          <div class="comment-header">
+            <div class="flex items-center gap-2">
+              <span class="comment-author"><%= comment.user.display_name %></span>
+              <span class="college-badge">
+                <i class="fas fa-university"></i>
+                <%= comment.user.college %>
+              </span>
+            </div>
+            
+            <div class="flex items-center gap-4">
+              <span class="comment-meta">
+                <i class="fas fa-clock"></i>
+                <%= time_ago_in_words(comment.created_at) %> ago
+              </span>
+              
+              <% if user_signed_in? && comment.user == current_user %>
+                <%= button_to post_comment_path(@post, comment), 
+                    method: :delete,
+                    class: "btn btn-danger btn-sm",
+                    data: { confirm: "Are you sure?" } do %>
+                  <i class="fas fa-trash"></i>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+          
+          <div class="comment-content">
+            <%= simple_format(comment.content) %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-8">
+      <i class="fas fa-comments text-4xl text-muted mb-4"></i>
+      <p class="text-muted">No comments yet. Be the first to comment!</p>
+    </div>
+  <% end %>
+</div>
